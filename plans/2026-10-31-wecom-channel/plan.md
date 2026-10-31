@@ -127,13 +127,19 @@ what the instruction after the marker names:
 - `attach`: a fixed workspace file as an attachment.
 - `quote`: the body of the reply this one answers.
 - `echo`: the message's own attachment, as materialized in the workspace.
+- `approve`: an approval request for a command, then the decision back to that
+  target as a reply; only the local approval check uses it.
 
 The package also offers `audit-journal` and `config-env-token`, which turns
 each WeCom channel's `secret_env` into a direct `secret` held only in memory.
 The test reads the journal only for what the channel interfaces cannot tell
-it: which pending conversation is the test channel, and the review each post
-conversation opened with, from `channel.inbound.persisted`. The node is
-prepared like the Telegram acceptance and first runs with `config-filesystem`.
+it: which pending conversation is the test channel, the review each post
+conversation opened with, from `channel.inbound.persisted`, and when the
+Channel has subscribed. The node reports ready before its agents' Channels
+connect, and WeCom keeps no event for a bot that is not connected, so each
+start waits for `channel.connection.subscribed` before the driver posts. The
+node is prepared like the Telegram acceptance and first runs with
+`config-filesystem`.
 
 The test script is the driver: it posts and replies in the test channel
 through the channel interfaces, then reads the channel's posts and replies and
@@ -175,3 +181,15 @@ data and files. Against the real platform, the test channel's posts and a
 direct message's file and image were read through the bot under test: channel
 files carry their names, and the encrypted downloads of a direct message name
 the file in `Content-Disposition`.
+The `e2e` test passes locally against the two dedicated bots and the test
+channel in about 160 seconds with BCN `0.3.0rc11`: all eight cases, twice in a
+row. Neither bot's secret appears in any file the run leaves, logs and journal
+included.
+Locally, a card in a direct message was approved and another rejected with its
+buttons, each answering the sender and leaving only its status button.
+Stopping the node with a third card pending cancelled the turn waiting on it;
+the card kept its buttons, as WeCom updates a card only in reply to its button.
+With BCN `0.3.0rc12`, which delivers turn events as `CHANNEL_TURN` and no longer
+calls `accept_turn_event`, the Channel drops that empty method; the `e2e` test
+passes again locally in about 135 seconds with every package in the lock at
+`0.3.0rc12`.

@@ -43,3 +43,40 @@ jobs:
       - name: Build
         run: uv build --no-sources
 
+  e2e:
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: wecom-e2e
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: '0.13.0'
+      - name: Install
+        run: uv sync --python 3.15 --prerelease allow
+      - name: Test
+        env:
+          PYTHONUNBUFFERED: '1'
+          WECOM_TEST_BOT_ID: ${{ vars.WECOM_TEST_BOT_ID }}
+          WECOM_TEST_BOT_SECRET: ${{ secrets.WECOM_TEST_BOT_SECRET }}
+          WECOM_DRIVER_BOT_ID: ${{ vars.WECOM_DRIVER_BOT_ID }}
+          WECOM_DRIVER_BOT_SECRET: ${{ secrets.WECOM_DRIVER_BOT_SECRET }}
+          WECOM_TEST_TOPIC_ID: ${{ vars.WECOM_TEST_TOPIC_ID }}
+        run: |
+          mkdir -p .artifacts
+          uv run --no-sync pytest -vv -s -m e2e --basetemp .artifacts/e2e
+      - name: Upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: wecom-e2e
+          path: |
+            .artifacts/e2e/**/*.log
+            .artifacts/e2e/**/audit.jsonl
+          include-hidden-files: true
+          if-no-files-found: warn
