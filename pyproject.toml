@@ -1,0 +1,48 @@
+[project]
+name = "bazaar-contrib-wecom"
+version = "0.3.0rc1"
+description = "WeCom Channel provider for Bazaar Compute Node"
+requires-python = ">=3.15"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+    "bazaar-core~=0.3.0rc11",
+    "bazaar-contrib-audit~=0.3.0rc11",
+    "bazaar-contrib-channel~=0.3.0rc11",
+    "bazaar-contrib-collaboration~=0.3.0rc11",
+    "bazaar-contrib-harness~=0.3.0rc11",
+    "bazaar-contrib-messages~=0.3.0rc11",
+    "bazaar-contrib-timer~=0.3.0rc11",
+    "aiohttp>=3.12.0",
+    "cryptography>=45.0.0",
+    "pydantic>=2.12.0",
+    "yarl>=1.18",
+]
+
+[project.urls]
+Repository = "https://github.com/open-bazaar/contrib-wecom"
+
+[project.entry-points."bazaar_compute_node.contribs"]
+wecom-builder = "bazaar_contrib_wecom:builder"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = ["bazaar-contrib-timer-wheel>=0.3.0rc10,<0.4", "ruff>=0.9.0", "pyright==1.1.414", "pytest>=8.3.0", "pytest-asyncio>=0.24.0", "blockbuster>=1.5.29,<1.6"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:anyio"
+asyncio_mode = "auto"
+markers = ["e2e: requires dedicated real WeCom bots and a test channel"]
+
+[tool.ruff.lint]
+extend-select = ["ASYNC"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.15"
+typeCheckingMode = "basic"
