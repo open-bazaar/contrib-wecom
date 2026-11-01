@@ -9,6 +9,7 @@ import base64
 import hashlib
 import json
 import math
+import mimetypes
 import random
 from collections.abc import AsyncGenerator, AsyncIterator, Coroutine, Mapping
 from contextlib import aclosing, asynccontextmanager
@@ -60,7 +61,6 @@ from .outbound import (
 from .topic import TopicConversations
 
 _STOP = object()
-_MAX_MEDIA_BYTES = 25 * 1024 * 1024
 _MAX_MARKDOWN_BYTES = 20_480
 _MAX_ERROR_DETAIL = 256
 _MEDIA_TIMEOUT = aiohttp.ClientTimeout(total=60, connect=10)
@@ -1258,6 +1258,7 @@ class WeComChannel:
     ) -> tuple[InboundAttachment, object]:
         url = media.get("url")
         aes_key = media.get("aeskey")
+        key = aes_key if isinstance(aes_key, str) and aes_key else None
         if not isinstance(url, str) or not url:
             return (
                 InboundAttachment(
@@ -1269,17 +1270,17 @@ class WeComChannel:
                 {"kind": kind, "error": "missing_media_url"},
             )
         name, media_type = await _media_headers(url, kind)
+        declared = (media_type or "").partition(";")[0].strip()
+        if key is not None or declared in ("", "application/octet-stream"):
+            # An encrypted download's Content-Type describes the ciphertext.
+            media_type = (await asyncio.to_thread(mimetypes.guess_type, name))[0]
         source = urlsplit(url)
         return (
             InboundAttachment(
                 name=name,
                 kind=kind,
                 media_type=media_type,
-                source=aclosing(
-                    _download_media(
-                        url, aes_key if isinstance(aes_key, str) and aes_key else None
-                    )
-                ),
+                source=aclosing(_download_media(url, key)),
             ),
             {"kind": kind, "source": f"{source.netloc}{source.path}"},
         )
@@ -1408,11 +1409,7 @@ async def _download_media(url: str, aes_key: str | None) -> AsyncGenerator[bytes
         session.get(url, allow_redirects=True) as response,
     ):
         response.raise_for_status()
-        size = 0
         async for chunk in response.content.iter_chunked(64 * 1024):
-            size += len(chunk)
-            if size > _MAX_MEDIA_BYTES:
-                raise ValueError("media_too_large")
             if decryptor is None:
                 yield chunk
             elif plain := decryptor.update(chunk):

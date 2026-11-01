@@ -518,11 +518,14 @@ class TopicConversations:
     async def _download(
         self, item: Download, *, name: str, kind: str
     ) -> InboundAttachment:
-        media_type = await self.client.media_type(item) if kind == "image" else None
-        if media_type:
-            suffix = mimetypes.guess_extension(media_type.split(";", 1)[0])
+        media_type = await self.client.media_type(item)
+        declared = (media_type or "").partition(";")[0].strip()
+        if kind == "image" and declared:
+            suffix = mimetypes.guess_extension(declared)
             if suffix:
                 name = name.rsplit(".", 1)[0] + suffix
+        elif kind == "file" and declared in ("", "application/octet-stream"):
+            media_type = (await asyncio.to_thread(mimetypes.guess_type, name))[0]
         return InboundAttachment(
             name=name,
             kind=kind,
@@ -739,6 +742,9 @@ class TopicConversations:
 
         address = state.address
         assert address.post_id is not None
+        if not await self._approved(address.topic_id):
+            # Only the review reply posts into a channel not yet let in.
+            return
         body = batch
         for index, attachment in enumerate(state.attachments):
             body = body.replace(
@@ -757,7 +763,7 @@ class TopicConversations:
                 + address.post_id,
                 notifies_runtime=False,
                 mentions_agent=True,
-                approved=await self._approved(address.topic_id),
+                approved=True,
                 attachments=tuple(
                     InboundAttachment(
                         name=attachment.descriptor.name,
