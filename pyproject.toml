@@ -1,6 +1,6 @@
 [project]
 name = "bazaar-contrib-wecom"
-version = "0.3.0rc1"
+version = "0.3.0rc2"
 description = "WeCom Channel provider for Bazaar Compute Node"
 requires-python = ">=3.15"
 readme = "README.md"
