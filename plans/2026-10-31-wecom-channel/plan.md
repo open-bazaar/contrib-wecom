@@ -240,3 +240,12 @@ With BCN `0.3.0rc12`, which delivers turn events as `CHANNEL_TURN` and no longer
 calls `accept_turn_event`, the Channel drops that empty method; the `e2e` test
 passes again locally in about 135 seconds with every package in the lock at
 `0.3.0rc12`.
+After Task 3's fixes, a fresh node against BCN `0.3.0rc12` with the provider
+built from the branch recorded an image in a direct message as `image/jpeg`;
+another image, sent once the conversation was approved, was downloaded and
+decrypted into a JPEG of that type. A post in a channel awaiting review opened
+the channel conversation and the post for review, each answered once with
+`review.reply`, and the bot's own review post was not recorded.
+With the channel file change, a reply in that post carrying `skhd.md` was
+recorded with that name and `text/markdown`, and a reply carrying an image as
+`image-1.jpg` with its download's `image/jpeg; charset=UTF-8`.
