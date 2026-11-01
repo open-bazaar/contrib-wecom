@@ -169,6 +169,53 @@ backfill and media there; template-card approvals; an edited post and reply,
 since bots cannot edit; and a configured `review.reply` posted into a pending
 channel. Record the CI run and the local check as acceptance evidence.
 
+## Task 3: Manual acceptance and its fixes
+
+A manual pass with a person on WeCom, against BCN `0.3.0rc12` and the released
+`bazaar-contrib-wecom 0.3.0rc1` with the scripted test Harness, covered what CI
+cannot drive. A direct message and an ordinary group each opened awaiting
+review, were answered with the configured `review.reply`, and woke the agent
+once `bcn agent review approve` let them in. Replies, quote backfill, a quoted
+group image, approval cards approved and rejected in a group, the test
+channel's review, and an edited reply in the agent's own post behaved as
+specified. A bot's reply in a direct message cannot quote the message it
+answers, and a group message cannot carry text and an image together; both are
+platform limits.
+
+Two defects surfaced and are fixed in this task:
+
+- Images in direct and group conversations were stored as
+  `application/octet-stream`, the type of the encrypted download, so a Harness
+  that passes only `image/` attachments as images received them as files. When
+  the download is encrypted, or the server names no specific type, the type now
+  comes from the file name the download carries.
+- The bot's new post was recorded as an inbound message even in a channel not
+  yet let in, where the only post the bot makes is the root's review answer, so
+  it appeared among the conversations awaiting review. Such a post is no longer
+  recorded.
+
+Files in channel posts also regain the type 0.2 gave them: their download's
+`Content-Type`, read on receipt by a request that leaves the body unread, as
+channel images already do. When the download names no specific type, the type
+comes from the file's name, as in direct and group conversations.
+
+The provider also stops capping direct and group media at 25 MB. The cap was a
+0.2 choice with no platform basis; the download streams to disk, and what
+arrives is bounded by the platform's own limits. BCN `0.3.0rc13` drops the
+node's own per-file limit as well, so the development and `e2e` requirements on
+`bazaar-compute-node` start there and the lock takes that release's packages.
+
+A post in a channel not yet let in opens two conversations awaiting review,
+the channel's root and the post, and each answers with `review.reply`; the
+root's answer arrives as a separate post. This stays as it is. Each
+conversation's request for notification is also what wakes the agent once that
+conversation is approved, so silencing either answer would lose the wake after
+the channel's approval or after the post's own.
+
+Verification: the `e2e` job, whose review case and topic cases cover the
+changed paths, and a manual rerun of an image in a direct message, a post in a
+channel awaiting review and a file in a channel post.
+
 ## Local validation
 
 Ruff and format checks, Pyright CLI and the language-server check pass.
