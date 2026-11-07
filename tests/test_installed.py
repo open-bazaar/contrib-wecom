@@ -25,6 +25,8 @@ from blockbuster import blockbuster_ctx
 
 entries = entry_points(group="bazaar_compute_node.contribs", name="wecom-builder")
 entry = next(iter(entries))
+# the node loads contribs outside its event loop
+definition = entry.load()
 selected = []
 workspace = Path.cwd()
 
@@ -47,7 +49,7 @@ async def consumer(ctx: Context):
 async def main():
     composition = Composition(entries=(
         ContribEntry(name="channel-builders", definition=channel_builders),
-        ContribEntry(name="wecom-builder", definition=entry.load()),
+        ContribEntry(name="wecom-builder", definition=definition),
         ContribEntry(name="consumer", definition=Contrib(
             accepts=[CHANNEL_BUILDERS, channel_builder_key("wecom")], lifespan=consumer
         )),

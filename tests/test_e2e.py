@@ -180,7 +180,7 @@ async def test_installed_node_over_real_wecom(tmp_path: Path):
         "--refresh",
         "--default-index",
         "https://pypi.org/simple",
-        "bazaar-compute-node>=0.3.0rc13,<0.4",
+        "bazaar-compute-node>=0.3.0rc19,<0.4",
         "--with",
         str(provider),
         "--with",
@@ -270,7 +270,7 @@ async def test_installed_node_over_real_wecom(tmp_path: Path):
             return [
                 event
                 for event in await journal(events)
-                if event["event_name"] == "channel.connection.subscribed"
+                if event["event_name"] == "channel.connection.connected"
             ]
 
         async def stop() -> None:
@@ -338,6 +338,9 @@ async def test_installed_node_over_real_wecom(tmp_path: Path):
 
         try:
             await start("config-filesystem")
+            connected = (await subscriptions())[-1]
+            assert connected["context"]["connection"] == "wecom:0"
+            assert connected["payload"]["identity"]["id"] == tested_id
 
             await driver.call(
                 "topic/send_post", topic_id=topic, content=f"{opening} open"
@@ -458,6 +461,37 @@ async def test_installed_node_over_real_wecom(tmp_path: Path):
             )
             (file,) = echoed["inline_file_list"]
             assert await driver.download(file) == payload
+
+            # Another connection subscribing as the same bot takes it over, and
+            # the node reports that it will not reconnect.
+            before = len(await journal(events))
+            async with session.ws_connect("wss://openws.work.weixin.qq.com") as other:
+                await other.send_str(
+                    json.dumps(
+                        {
+                            "cmd": "aibot_subscribe",
+                            "headers": {"req_id": f"aibot_subscribe-{uuid4()}"},
+                            "body": {
+                                "bot_id": tested_id,
+                                "secret": os.environ["WECOM_TEST_BOT_SECRET"],
+                            },
+                        }
+                    )
+                )
+                await other.receive()
+                async with asyncio.timeout(WAIT_SECONDS):
+                    while True:
+                        failures = [
+                            event
+                            for event in (await journal(events))[before:]
+                            if event["event_name"] == "channel.connection.failed"
+                        ]
+                        if failures:
+                            break
+                        await asyncio.sleep(0.5)
+            assert failures[0]["context"]["connection"] == "wecom:0"
+            assert failures[0]["payload"]["retry_in_ms"] is None
+            assert failures[0]["error"]["kind"] == "wecom_disconnected_event"
 
             await stop()
             await start("config-env-token")

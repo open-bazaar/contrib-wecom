@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import asyncio
 import os
+import tomllib
 from contextlib import asynccontextmanager
+from importlib.resources import files
+from pathlib import Path
 from typing import Any, ClassVar, cast
 
 from bazaar_contrib_audit import AUDIT
@@ -23,12 +26,23 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .channel import WeComChannel
 
+_LOCALES = Path(str(files(__name__))) / "resources" / "locales"
+
 
 class Config(BaseModel):
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+        json_schema_extra={
+            "x-locales": {
+                path.stem: tomllib.loads(path.read_text(encoding="utf-8"))
+                for path in sorted(_LOCALES.glob("*.toml"))
+            }
+        },
+    )
     bot_id: str = Field(min_length=1)
     secret_env: str | None = Field(default=None, min_length=1)
-    secret: str | None = None
+    secret: str | None = Field(default=None, json_schema_extra={"writeOnly": True})
     websocket_url: str = Field(default="wss://openws.work.weixin.qq.com", min_length=1)
 
 

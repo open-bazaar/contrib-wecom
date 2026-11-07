@@ -104,8 +104,8 @@ wheels = [
 ]
 
 [[package]]
-name = "bazaar-compute-node"
-version = "0.3.0rc13"
+name = "bazaar-compute"
+version = "0.3.0rc20"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bazaar-contrib-config" },
@@ -115,9 +115,26 @@ dependencies = [
     { name = "bazaar-core" },
     { name = "click" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/76/5b28516f410398e4b6c4878c2e27f9a34f406257e45e4ddc06cafc4bedfd/bazaar_compute_node-0.3.0rc13.tar.gz", hash = "sha256:ee5fb02a5191e877f187d4ffffea5a3a5ea69b753059194482b05a25284bc055", size = 10640, upload-time = "2026-11-01T13:47:59.665Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7f/95/43a5e7fd1673934626795d4cd4896c7c9878ad5bf2a6cc3280d4948d6730/bazaar_compute-0.3.0rc20.tar.gz", hash = "sha256:683b6b7808a2d9c6af1590ca33a692773310a8f1d09b2a431ea285117bad5cde", size = 11425, upload-time = "2026-11-07T13:22:17.058Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/46/025b71cbc88880a794bd2478a5a3000c01ddfcb52a38f82e3f2bded13eff/bazaar_compute_node-0.3.0rc13-py3-none-any.whl", hash = "sha256:c45b4223fa1709d6556d75f0c61ff2075408a3205ae70056e535bff48796dbf1", size = 12689, upload-time = "2026-11-01T13:47:58.841Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/4a/73b6e296ff4dd1e521dfb2b0d029624509201e3032e4426da861c75e2dda/bazaar_compute-0.3.0rc20-py3-none-any.whl", hash = "sha256:390c29ce67b371483034741c8bedda5cb167685ea2c5acf8b0d4169c4ad777b5", size = 13203, upload-time = "2026-11-07T13:22:15.942Z" },
+]
+
+[package.optional-dependencies]
+node = [
+    { name = "bazaar-contrib-node-management" },
+]
+
+[[package]]
+name = "bazaar-compute-node"
+version = "0.3.0rc20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "bazaar-compute", extra = ["node"] },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1f/f6/e4af76d235309adc642b9590b6354cb7b6e1bd6b1dc1a492631e732ccca9/bazaar_compute_node-0.3.0rc20.tar.gz", hash = "sha256:52d07ee7747c8540411f70d5291827ea8ece1a6fbdaeb2a3a43c346fd9cd91e4", size = 6627, upload-time = "2026-11-07T13:22:19.625Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/26/ee/c692a1e058136cf26b0419ed65481d37a65d30546f0931260af14f516be3/bazaar_compute_node-0.3.0rc20-py3-none-any.whl", hash = "sha256:8231d14b0f00090d2fc644ed0a4bfeb3f8fe5ca3d3350984fc9baa63ff59e08b", size = 7350, upload-time = "2026-11-07T13:22:18.752Z" },
 ]
 
 [[package]]
@@ -135,7 +152,7 @@ wheels = [
 
 [[package]]
 name = "bazaar-contrib-channel"
-version = "0.3.0rc13"
+version = "0.3.0rc20"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bazaar-contrib-harness" },
@@ -143,9 +160,9 @@ dependencies = [
     { name = "bazaar-core" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/c6/6f395ab5e7120ebe261786dd445013fe7b4dc320a58508efe8dca35607db/bazaar_contrib_channel-0.3.0rc13.tar.gz", hash = "sha256:5234039877acca53584ff312c7f7afb6849db0d5dda73f0d76be49f3338cf235", size = 11765, upload-time = "2026-11-01T13:47:29.417Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/d3/3a8c488d4f2613088672a7771aed74f6efe8af26dc3db27fbaa3c5106faf/bazaar_contrib_channel-0.3.0rc20.tar.gz", hash = "sha256:5037afb82e7f96cb54c4b466b70e7e670fdd58e923227d86501f3a396724ee57", size = 11935, upload-time = "2026-11-07T13:21:43.085Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c4/b6/d53655259a238e9400a70479460f9cd90277705e287cede2dc9410436ea3/bazaar_contrib_channel-0.3.0rc13-py3-none-any.whl", hash = "sha256:9d633968b529847de58f359c54540c5b91df328ff008820a151b0094c9739287", size = 15183, upload-time = "2026-11-01T13:47:28.51Z" },
+    { url = "https://files.pythonhosted.org/packages/21/7a/35736adf906ca3445dd086e9cc3459a346739d04486f075f4d086d5bec3f/bazaar_contrib_channel-0.3.0rc20-py3-none-any.whl", hash = "sha256:e5b617783be3890e08deb403486cd906e3d9a8fb8a8cb72478ad0729521636b5", size = 15379, upload-time = "2026-11-07T13:21:42.195Z" },
 ]
 
 [[package]]
@@ -268,6 +285,25 @@ wheels = [
 ]
 
 [[package]]
+name = "bazaar-contrib-node-management"
+version = "0.3.0rc20"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "bazaar-contrib-audit" },
+    { name = "bazaar-contrib-invoke" },
+    { name = "bazaar-contrib-manager" },
+    { name = "bazaar-contrib-sidecar" },
+    { name = "bazaar-contrib-timer" },
+    { name = "bazaar-core" },
+    { name = "packaging" },
+    { name = "psutil" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/dc/fa2871655c9278a880b5a9c2e0d71f14f9abffa28a22971886796b095ad6/bazaar_contrib_node_management-0.3.0rc20.tar.gz", hash = "sha256:5f251cc833cdc36015d3e3874ff8456837b9f1b34200cefbf0fe27a9d8da4e7c", size = 8848, upload-time = "2026-11-07T13:22:11.478Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cd/26/9e24e47b4e83121ba8f0df7563de7af65d3d5beac2ff24ed9965ef5cc6cc/bazaar_contrib_node_management-0.3.0rc20-py3-none-any.whl", hash = "sha256:474f6415eca3ac04612dfdaf907a2df67494725662f538314b0865503dad76c8", size = 10870, upload-time = "2026-11-07T13:22:10.608Z" },
+]
+
+[[package]]
 name = "bazaar-contrib-schema"
 version = "0.3.0rc13"
 source = { registry = "https://pypi.org/simple" }
@@ -369,7 +405,7 @@ dev = [
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.12.0" },
     { name = "bazaar-contrib-audit", specifier = "~=0.3.0rc11" },
-    { name = "bazaar-contrib-channel", specifier = "~=0.3.0rc11" },
+    { name = "bazaar-contrib-channel", specifier = "~=0.3.0rc19" },
     { name = "bazaar-contrib-collaboration", specifier = "~=0.3.0rc11" },
     { name = "bazaar-contrib-harness", specifier = "~=0.3.0rc11" },
     { name = "bazaar-contrib-messages", specifier = "~=0.3.0rc11" },
@@ -382,7 +418,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bazaar-compute-node", specifier = ">=0.3.0rc13,<0.4" },
+    { name = "bazaar-compute-node", specifier = ">=0.3.0rc19,<0.4" },
     { name = "bazaar-contrib-timer-wheel", specifier = ">=0.3.0rc10,<0.4" },
     { name = "bcn-wecom-test-harness", editable = "tests/fixtures/harness" },
     { name = "blockbuster", specifier = ">=1.5.29,<1.6" },
@@ -761,6 +797,22 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d4/ef/8bae0a316d406644450522f2f3d44a4e19632f5f3bb60d1d0e6c53842616/propcache-0.5.4-cp315-cp315t-win_amd64.whl", hash = "sha256:02c0a34f16889cf800f10f0247a564d8ce6eeab6ffcd7c87198f769067eb8432", size = 48574, upload-time = "2026-09-16T00:17:10.077Z" },
     { url = "https://files.pythonhosted.org/packages/57/be/bcc053f66a97355683884b448198e79580fae8e8fa4d96b9bb01614e9913/propcache-0.5.4-cp315-cp315t-win_arm64.whl", hash = "sha256:dc4242ca653c9b30ab51c5f8193323e7bc0928f897ee9103201e59a43abcb72e", size = 45625, upload-time = "2026-09-16T00:17:11.377Z" },
     { url = "https://files.pythonhosted.org/packages/f5/cd/785c64ed382f3f04201870267b02783f63b4678c2acfddc177a3ebcc2727/propcache-0.5.4-py3-none-any.whl", hash = "sha256:62c60aec739ed00124573cce1178138fd690c7676352d67a37328c1cf51d7468", size = 16338, upload-time = "2026-09-16T00:17:13.106Z" },
+]
+
+[[package]]
+name = "psutil"
+version = "7.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/c6/d1ddf4abb55e93cebc4f2ed8b5d6dbad109ecb8d63748dd2b20ab5e57ebe/psutil-7.2.2.tar.gz", hash = "sha256:0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372", size = 493740, upload-time = "2026-01-28T18:14:54.428Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e7/36/5ee6e05c9bd427237b11b3937ad82bb8ad2752d72c6969314590dd0c2f6e/psutil-7.2.2-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:ed0cace939114f62738d808fdcecd4c869222507e266e574799e9c0faa17d486", size = 129090, upload-time = "2026-01-28T18:15:22.168Z" },
+    { url = "https://files.pythonhosted.org/packages/80/c4/f5af4c1ca8c1eeb2e92ccca14ce8effdeec651d5ab6053c589b074eda6e1/psutil-7.2.2-cp36-abi3-macosx_11_0_arm64.whl", hash = "sha256:1a7b04c10f32cc88ab39cbf606e117fd74721c831c98a27dc04578deb0c16979", size = 129859, upload-time = "2026-01-28T18:15:23.795Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9", size = 155560, upload-time = "2026-01-28T18:15:25.976Z" },
+    { url = "https://files.pythonhosted.org/packages/63/65/37648c0c158dc222aba51c089eb3bdfa238e621674dc42d48706e639204f/psutil-7.2.2-cp36-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:b0726cecd84f9474419d67252add4ac0cd9811b04d61123054b9fb6f57df6e9e", size = 156997, upload-time = "2026-01-28T18:15:27.794Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/13/125093eadae863ce03c6ffdbae9929430d116a246ef69866dad94da3bfbc/psutil-7.2.2-cp36-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:fd04ef36b4a6d599bbdb225dd1d3f51e00105f6d48a28f006da7f9822f2606d8", size = 148972, upload-time = "2026-01-28T18:15:29.342Z" },
+    { url = "https://files.pythonhosted.org/packages/04/78/0acd37ca84ce3ddffaa92ef0f571e073faa6d8ff1f0559ab1272188ea2be/psutil-7.2.2-cp36-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:b58fabe35e80b264a4e3bb23e6b96f9e45a3df7fb7eed419ac0e5947c61e47cc", size = 148266, upload-time = "2026-01-28T18:15:31.597Z" },
+    { url = "https://files.pythonhosted.org/packages/b4/90/e2159492b5426be0c1fef7acba807a03511f97c5f86b3caeda6ad92351a7/psutil-7.2.2-cp37-abi3-win_amd64.whl", hash = "sha256:eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988", size = 137737, upload-time = "2026-01-28T18:15:33.849Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/c7/7bb2e321574b10df20cbde462a94e2b71d05f9bbda251ef27d104668306a/psutil-7.2.2-cp37-abi3-win_arm64.whl", hash = "sha256:8c233660f575a5a89e6d4cb65d9f938126312bca76d8fe087b947b3a1aaac9ee", size = 134617, upload-time = "2026-01-28T18:15:36.514Z" },
 ]
 
 [[package]]
