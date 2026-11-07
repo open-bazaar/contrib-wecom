@@ -25,7 +25,9 @@ import aiohttp
 from bazaar_contrib_audit import Audit, AuditContext, AuditError
 from bazaar_contrib_channel import (
     ChannelApprovalRequest,
+    ChannelConnected,
     ChannelConnectionError,
+    ChannelConnectionFailed,
     ChannelDeliveryReceipt,
     ChannelIdentity,
     ChannelInput,
@@ -660,8 +662,10 @@ class WeComChannel:
                 auth_attempt = self._auth_attempt
                 if not self._startup_finished.is_set() or auth_attempt >= 3:
                     await self._publish(
-                        "channel.connection.failed",
-                        {"attempt": auth_attempt},
+                        ChannelConnectionFailed.event_name,
+                        ChannelConnectionFailed(retry_in_ms=None).model_dump(
+                            mode="json"
+                        ),
                         AuditError(kind="wecom_authentication", message=str(error)),
                     )
                     self._startup_error = error
@@ -673,8 +677,10 @@ class WeComChannel:
                 network_attempt = self._network_attempt
                 if not self._startup_finished.is_set() and network_attempt >= 6:
                     await self._publish(
-                        "channel.connection.failed",
-                        {"attempt": network_attempt},
+                        ChannelConnectionFailed.event_name,
+                        ChannelConnectionFailed(retry_in_ms=None).model_dump(
+                            mode="json"
+                        ),
                         AuditError(
                             kind=type(error).__name__, message=self._describe(error)
                         ),
@@ -722,8 +728,8 @@ class WeComChannel:
             if self._is_disconnected_event(frame):
                 self._degraded = True
                 await self._publish(
-                    "channel.connection.failed",
-                    {"reason": "disconnected_event"},
+                    ChannelConnectionFailed.event_name,
+                    ChannelConnectionFailed(retry_in_ms=None).model_dump(mode="json"),
                     AuditError(
                         kind="wecom_disconnected_event",
                         message="Another connection took over this WeCom bot",
@@ -793,7 +799,10 @@ class WeComChannel:
             self._network_attempt = 0
             self._auth_attempt = 0
             self._ready.set()
-            await self._publish("channel.connection.subscribed", {})
+            await self._publish(
+                ChannelConnected.event_name,
+                ChannelConnected(identity=self.get_identity()).model_dump(mode="json"),
+            )
             self._startup_finished.set()
             heartbeat = self._group.create_task(
                 self._heartbeat(connection), name="bcn-wecom-heartbeat"
@@ -1333,8 +1342,8 @@ class WeComChannel:
         delay += random.uniform(0, min(delay * 0.2, 1))
         retry_in_ms = math.ceil(delay * 1000)
         await self._publish(
-            "channel.connection.failed",
-            {"attempt": attempt, "retry_in_ms": retry_in_ms},
+            ChannelConnectionFailed.event_name,
+            ChannelConnectionFailed(retry_in_ms=retry_in_ms).model_dump(mode="json"),
             AuditError(kind=type(error).__name__, message=self._describe(error)),
         )
         await self._timer.create(retry_in_ms).wait()

@@ -216,6 +216,30 @@ Verification: the `e2e` job, whose review case and topic cases cover the
 changed paths, and a manual rerun of an image in a direct message, a post in a
 channel awaiting review and a file in a channel post.
 
+## Task 4: Form words and connection events
+
+BCN stage 13 draws every channel's configuration form from the schema of its
+entity model and reports each connection's state from shared connection events,
+per messages `25fe9d74-6015-5615-b26a-1021b11d8792`, `7ce989b2-cd0f-577c-9648-97f4153dc2c5`
+and `beb133fa-5a23-56d3-b225-f18f5a665270`. The words of the form live in
+`resources/locales/en.toml` and `zh-CN.toml`, keyed by field: `<field>.title`,
+`<field>.description` and, for a field that can stay empty, `<field>.empty`.
+`Config` carries both under `x-locales` at the top of its schema; `secret` is
+marked `writeOnly`.
+
+The Channel publishes `ChannelConnected` with the bot's identity once it is
+subscribed, replacing `channel.connection.subscribed`, and
+`ChannelConnectionFailed` with the error on every failure: with the backoff
+before the next attempt, or without one when it stops trying, which is an
+authentication rejected at startup or three times in a row, six network
+failures at startup, or `disconnected_event` when another connection takes the
+bot over. The agent names the connection on them, so the Channel does not.
+`bazaar-contrib-channel` moves to `~=0.3.0rc20`, and the tests install
+`bazaar-compute-node>=0.3.0rc20`. The `e2e` test checks that the node reports
+itself connected on `wecom:0` as the bot under test, then subscribes as the
+same bot from another connection: the node reports the failure without a retry
+delay, with `wecom_disconnected_event`.
+
 ## Local validation
 
 Ruff and format checks, Pyright CLI and the language-server check pass.
