@@ -367,7 +367,7 @@ wheels = [
 
 [[package]]
 name = "bazaar-contrib-wecom"
-version = "0.3.0rc3"
+version = "0.3.0rc4"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
