@@ -206,7 +206,6 @@ async def test_installed_node_over_real_wecom(tmp_path: Path):
                     {
                         "id": "wecom-test",
                         "name": "WeCom Test",
-                        "workspace": str(tmp_path / "workspace"),
                         "mode": "dangerous_individual",
                         "channel": [
                             {
