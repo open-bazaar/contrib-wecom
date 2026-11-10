@@ -31,7 +31,6 @@ _LOCALES = Path(str(files(__name__))) / "resources" / "locales"
 
 class Config(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
         frozen=True,
         json_schema_extra={
             "x-locales": {
