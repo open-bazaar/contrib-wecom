@@ -152,7 +152,7 @@ wheels = [
 
 [[package]]
 name = "bazaar-contrib-channel"
-version = "0.3.0rc26"
+version = "0.3.0rc33"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bazaar-contrib-harness" },
@@ -160,9 +160,9 @@ dependencies = [
     { name = "bazaar-core" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fa/f8/4221b666195c9bf1245eb812395f9f84d60feacb8671e62db922372018fe/bazaar_contrib_channel-0.3.0rc26.tar.gz", hash = "sha256:a7da06953b8f4a9126bee75873b60f653f3890e4887f66ae547d689986974b01", size = 11934, upload-time = "2026-11-10T09:28:55.857Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/c4/fb5bcfecf78a9a2c6f8adce76814fc112684dca40155e9ec84971bdc552a/bazaar_contrib_channel-0.3.0rc33.tar.gz", hash = "sha256:31a233b0388a2f639824322ec9a03d64e98d05ce979f4d32d4a6a42740a67c49", size = 12155, upload-time = "2026-11-16T03:02:44.803Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/bc/f197c5fb41451516eeacb12088763082a1dc47331a00b31e21e638d09f46/bazaar_contrib_channel-0.3.0rc26-py3-none-any.whl", hash = "sha256:7e487261f912d64ea6ce9f0c9c97125445add80339114d7e9c59c65055376cf0", size = 15383, upload-time = "2026-11-10T09:28:55.003Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/a6/6687e39df0fff693e8bde1dbf3e50b9ea5ed2c1291bc3609e67c466a5c55/bazaar_contrib_channel-0.3.0rc33-py3-none-any.whl", hash = "sha256:a37f99e7023389a906763f011a9f406c3a9b73bf06b60c310b29308175ab5a3c", size = 15663, upload-time = "2026-11-16T03:02:43.729Z" },
 ]
 
 [[package]]
@@ -400,7 +400,7 @@ dev = [
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.12.0" },
     { name = "bazaar-contrib-audit", specifier = "~=0.3.0rc11" },
-    { name = "bazaar-contrib-channel", specifier = "~=0.3.0rc19" },
+    { name = "bazaar-contrib-channel", specifier = "~=0.3.0rc33" },
     { name = "bazaar-contrib-collaboration", specifier = "~=0.3.0rc11" },
     { name = "bazaar-contrib-harness", specifier = "~=0.3.0rc11" },
     { name = "bazaar-contrib-messages", specifier = "~=0.3.0rc11" },

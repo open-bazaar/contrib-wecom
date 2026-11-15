@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import tomllib
 from contextlib import asynccontextmanager
@@ -16,6 +17,7 @@ from bazaar_contrib_channel import (
     CHANNEL_BUILDERS,
     CHANNEL_INPUT,
     ChannelBuilderConfig,
+    ChannelTarget,
     channel_builder_key,
 )
 from bazaar_contrib_collaboration import CONTACT_REVIEWED, ContactReviewed
@@ -25,6 +27,7 @@ from bazaar_core import Context, Contrib
 from pydantic import BaseModel, ConfigDict, Field
 
 from .channel import WeComChannel
+from .identity import TopicAddress, parse_provider_thread_id
 
 _LOCALES = Path(str(files(__name__))) / "resources" / "locales"
 
@@ -88,6 +91,29 @@ class BuilderConfig(ChannelBuilderConfig):
     kind: ClassVar[str] = "wecom"
     entity_model: ClassVar[type[BaseModel]] = Config
     entry: ClassVar[Contrib[Any]] = channel
+
+    @classmethod
+    def conversation_key(
+        cls, target: ChannelTarget, configs: tuple[dict[str, Any], ...] = ()
+    ) -> str | None:
+        if target.kind != "group":
+            return None
+        peer: tuple[str | None, ...]
+        topic = TopicAddress.parse(target.thread_id)
+        if topic is None:
+            bot_id, chat_id = parse_provider_thread_id(target.thread_id)
+            peer = ("chat", chat_id)
+        else:
+            bot_id = topic.bot_id
+            peer = ("topic", topic.topic_id, topic.post_id)
+        endpoints = {
+            config.websocket_url
+            for values in configs
+            if (config := Config.model_validate(values)).bot_id == bot_id
+        }
+        if len(endpoints) != 1:
+            return None
+        return json.dumps((endpoints.pop(), *peer))
 
 
 @asynccontextmanager
